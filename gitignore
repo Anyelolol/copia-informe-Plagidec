@@ -1,0 +1,34 @@
+# PyCharm / JetBrains
+.idea/
+*.iml
+out/
+
+# PHP / Composer
+/vendor/
+composer.phar
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+storage/logs/*
+!storage/logs/.gitkeep
+
+# Uploads / archivos generados
+storage/uploads/*
+!storage/uploads/.gitkeep
+
+# SO
+.DS_Store
+Thumbs.db
+
+# Editor / temporales
+*.swp
+*.swo
+*~
+
+# DB local (si usás sqlite)
+*.sqlite
+*.sqlite3
+*.db
