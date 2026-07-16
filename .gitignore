@@ -1,0 +1,31 @@
+#si es con otra vercion de python
+.venv/
+venv/
+env/
+
+# credenciales, luego sube el .env.example
+.env
+*.env
+
+.idea/
+
+#porsicaso
+.vscode/
+
+__pycache__/
+*.py[cod]
+*$py.class
+
+*.log
+
+*.tmp
+*.bak
+*.swp
+.DS_Store
+
+#para los archivos subidos
+backend-arc/uploads/*
+!backend-arc/uploads/.gitkeep
+
+backend-ia/models/*
+frontend/node_modules/*
