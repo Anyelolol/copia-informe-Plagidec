@@ -40,16 +40,30 @@ class PlagiarismController {
         $eid = $ev['eid'];
 
         try {
-            $texto      = UploadService::leerTexto($doc['ruta_archivo']);
+            $texto = UploadService::leerTexto($doc['ruta_archivo']);
+            $tipo  = $body['tipo_evaluacion'] ?? 'similitud_semantica';
+
             $referencia = $body['referencia'] ?? '';
+            $didRef     = (int)($body['did_referencia'] ?? 0);
+            if ($didRef && !$referencia) {
+                $docRef = DocumentoModel::porId($didRef);
+                if ($docRef && ($payload['rol'] === 'admin' || $docRef['uid'] === $uid)) {
+                    $referencia = UploadService::leerTexto($docRef['ruta_archivo']);
+                }
+            }
 
-            $result = PlagiarismService::analyze($texto, $referencia);
+            if ($tipo === 'deteccion_ia') {
+                $deteccion = PlagiarismService::detect($texto);
+                $result = [
+                    'similarity'   => $deteccion['prob_ia'] ?? $deteccion['confidence'] ?? null,
+                    'ia_detection' => $deteccion,
+                ];
+            } else {
+                $result = PlagiarismService::analyze($texto, $referencia);
+            }
 
-            $detectResult = PlagiarismService::detect($texto);
-            $result['ia_detection'] = $detectResult;
-
-            if (isset($result['error'])) {
-                throw new \RuntimeException($result['error']);
+            if (isset($result['error']) || (isset($result['ia_detection']['error']))) {
+                throw new \RuntimeException($result['error'] ?? $result['ia_detection']['error']);
             }
 
             $score = (float)($result['similarity'] ?? 0.0);

@@ -16,6 +16,7 @@ match (true) {
     $uri === '/auth/me'       && $method === 'GET'  => AuthController::me(),
 
     $uri === '/usuarios'      && $method === 'GET'  => UsuarioController::listar(),
+    $uri === '/usuarios'      && $method === 'POST' => UsuarioController::crear(),
     (bool)preg_match('#^/usuarios/(\d+)$#', $uri, $m) && $method === 'GET'    => UsuarioController::obtener((int)$m[1]),
     (bool)preg_match('#^/usuarios/(\d+)$#', $uri, $m) && $method === 'PUT'    => UsuarioController::actualizar((int)$m[1]),
     (bool)preg_match('#^/usuarios/(\d+)$#', $uri, $m) && $method === 'DELETE' => UsuarioController::eliminar((int)$m[1]),

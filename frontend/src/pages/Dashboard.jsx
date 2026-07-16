@@ -10,6 +10,7 @@ export default function Dashboard() {
   const { usuario } = useAuth()
   const [stats, setStats] = useState({ docs: 0, evaluaciones: 0, health: null })
   const [recientes, setRecientes] = useState([])
+  const [docsMap, setDocsMap] = useState({})
 
   useEffect(() => {
     Promise.all([
@@ -19,6 +20,7 @@ export default function Dashboard() {
     ]).then(([docs, hist, health]) => {
       setStats({ docs: docs.length, evaluaciones: hist.length, health })
       setRecientes(hist.slice(0, 5))
+      setDocsMap(Object.fromEntries(docs.map(d => [d.did, d.nombre_archivo])))
     }).catch(() => {})
   }, [])
 
@@ -65,7 +67,7 @@ export default function Dashboard() {
             <table>
               <thead>
                 <tr>
-                  <th>ID</th>
+                  <th>#</th>
                   <th>Documento</th>
                   <th>Tipo</th>
                   <th>Score</th>
@@ -74,14 +76,14 @@ export default function Dashboard() {
                 </tr>
               </thead>
               <tbody>
-                {recientes.map(e => (
+                {recientes.map((e, i) => (
                   <tr key={e.eid}>
-                    <td><Link to={`/historial/${e.eid}`}>#{e.eid}</Link></td>
-                    <td>Doc #{e.did}</td>
+                    <td><Link to={`/historial/${e.eid}`}>{i + 1}</Link></td>
+                    <td>{docsMap[e.did] || `Doc #${e.did}`}</td>
                     <td style={{ color: 'var(--text-muted)', fontSize: 12 }}>{e.tipo_evaluacion}</td>
-                    <td><ScoreBadge score={e.score_similitud} /></td>
+                    <td><ScoreBadge score={e.score_plagio} /></td>
                     <td><span className={`badge badge-${e.estado === 'completado' ? 'success' : e.estado === 'error' ? 'danger' : 'info'}`}>{e.estado}</span></td>
-                    <td style={{ color: 'var(--text-muted)', fontSize: 12 }}>{new Date(e.creado_en).toLocaleDateString()}</td>
+                    <td style={{ color: 'var(--text-muted)', fontSize: 12 }}>{new Date(e.fecha_evaluacion).toLocaleDateString()}</td>
                   </tr>
                 ))}
               </tbody>

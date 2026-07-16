@@ -27,6 +27,7 @@ export default function Layout() {
           <NavItem to="/dashboard" label="Dashboard" icon="◈" />
           <NavItem to="/documentos" label="Documentos" icon="◻" />
           <NavItem to="/analizar" label="Analizar" icon="◎" />
+          <NavItem to="/historial" label="Historial" icon="☰" />
           {usuario?.rol === 'admin' && (
             <>
               <div className={styles.divider} />

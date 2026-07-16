@@ -10,7 +10,7 @@ class UsuarioModel {
             VALUES (?, ?, ?, ?, ?)
             RETURNING uid, nombre, apellido, email, rol, fecha_creacion, activo
         ");
-        $stmt->execute([$d['nombre'], $d['apellido'], $d['email'], $hash, $d['rol'] ?? 'estudiante']);
+        $stmt->execute([$d['nombre'], $d['apellido'], $d['email'], $hash, $d['rol'] ?? 'docente']);
         return $stmt->fetch();
     }
 
@@ -41,7 +41,33 @@ class UsuarioModel {
             ->fetchAll();
     }
 
+    public static function contarAdminsActivos(?int $excluirUid = null): int {
+        $sql  = "SELECT COUNT(*) AS c FROM usuario WHERE rol = 'admin' AND activo = TRUE";
+        $vals = [];
+        if ($excluirUid !== null) {
+            $sql .= " AND uid <> ?";
+            $vals[] = $excluirUid;
+        }
+        $stmt = getDB()->prepare($sql);
+        $stmt->execute($vals);
+        return (int) $stmt->fetch()['c'];
+    }
+
     public static function actualizar(int $uid, array $d): ?array {
+        $actual = self::porId($uid);
+        if (!$actual) return null;
+
+        $dejariaDeSerAdminActivo =
+            ($actual['rol'] === 'admin' && $actual['activo']) &&
+            (
+                (array_key_exists('rol', $d) && $d['rol'] !== 'admin') ||
+                (array_key_exists('activo', $d) && !$d['activo'])
+            );
+
+        if ($dejariaDeSerAdminActivo && self::contarAdminsActivos($uid) === 0) {
+            throw new \RuntimeException('No se puede modificar: debe existir al menos un administrador activo');
+        }
+
         $fields = [];
         $vals   = [];
         foreach (['nombre', 'apellido', 'email', 'rol', 'activo'] as $f) {
@@ -65,6 +91,13 @@ class UsuarioModel {
     }
 
     public static function eliminar(int $uid): void {
+        $actual = self::porId($uid);
+        if (!$actual) return;
+
+        if ($actual['rol'] === 'admin' && $actual['activo'] && self::contarAdminsActivos($uid) === 0) {
+            throw new \RuntimeException('No se puede desactivar: debe existir al menos un administrador activo');
+        }
+
         getDB()->prepare("UPDATE usuario SET activo = FALSE WHERE uid = ?")->execute([$uid]);
     }
 }

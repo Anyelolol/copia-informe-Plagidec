@@ -65,23 +65,23 @@ export default function Documentos() {
               </tr>
             </thead>
             <tbody>
-              {docs.map(d => (
+              {docs.map((d, i) => (
                 <tr key={d.did}>
-                  <td style={{ color: 'var(--text-muted)' }}>{d.did}</td>
-                  <td>{d.nombre_original}</td>
-                  <td style={{ color: 'var(--text-muted)', fontSize: 12 }}>{d.tipo_mime}</td>
+                  <td style={{ color: 'var(--text-muted)' }}>{i + 1}</td>
+                  <td>{d.nombre_archivo}</td>
+                  <td style={{ color: 'var(--text-muted)', fontSize: 12 }}>{d.tipo_documento}</td>
                   <td>
                     <span className={`badge badge-${d.estado === 'completado' ? 'success' : d.estado === 'error' ? 'danger' : d.estado === 'procesando' ? 'warning' : 'info'}`}>
                       {d.estado}
                     </span>
                   </td>
-                  <td style={{ color: 'var(--text-muted)', fontSize: 12 }}>{new Date(d.creado_en).toLocaleDateString()}</td>
+                  <td style={{ color: 'var(--text-muted)', fontSize: 12 }}>{new Date(d.fecha_subida).toLocaleDateString()}</td>
                   <td>
                     <div className={styles.actions}>
                       <Link to={`/analizar?did=${d.did}`}>
                         <button className="btn-ghost" style={{ padding: '4px 10px', fontSize: 12 }}>Analizar</button>
                       </Link>
-                      <button className="btn-danger" style={{ padding: '4px 10px', fontSize: 12 }} onClick={() => onEliminar(d.did, d.nombre_original)}>✕</button>
+                      <button className="btn-danger" style={{ padding: '4px 10px', fontSize: 12 }} onClick={() => onEliminar(d.did, d.nombre_archivo)}>✕</button>
                     </div>
                   </td>
                 </tr>

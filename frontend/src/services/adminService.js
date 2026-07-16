@@ -16,6 +16,12 @@ export const adminService = {
   listarUsuarios: () =>
     api.get('/usuarios').then(r => r.data),
 
+  crearUsuario: (data) =>
+    api.post('/usuarios', data).then(r => r.data),
+
+  actualizarUsuario: (uid, data) =>
+    api.put(`/usuarios/${uid}`, data).then(r => r.data),
+
   eliminarUsuario: (uid) =>
     api.delete(`/usuarios/${uid}`).then(r => r.data)
 }

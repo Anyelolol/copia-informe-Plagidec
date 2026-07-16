@@ -31,6 +31,8 @@ export default function App() {
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="documentos" element={<Documentos />} />
             <Route path="analizar" element={<Analizar />} />
+            <Route path="historial" element={<Historial />} />
+            <Route path="historial/:eid" element={<ResultadoDetalle />} />
             <Route path="admin/usuarios" element={
               <ProtectedRoute adminOnly>
                 <Usuarios />

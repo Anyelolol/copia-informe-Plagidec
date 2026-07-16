@@ -7,8 +7,8 @@ CREATE TABLE IF NOT EXISTS usuario (
     apellido       VARCHAR(100) NOT NULL,
     email          VARCHAR(255) UNIQUE NOT NULL,
     password_hash  TEXT NOT NULL,
-    rol            VARCHAR(50) NOT NULL DEFAULT 'estudiante'
-                       CHECK (rol IN ('admin','docente','estudiante')),
+    rol            VARCHAR(50) NOT NULL DEFAULT 'docente'
+                       CHECK (rol IN ('admin','docente')),
     fecha_creacion TIMESTAMP NOT NULL DEFAULT NOW(),
     ultimo_acceso  TIMESTAMP,
     activo         BOOLEAN NOT NULL DEFAULT TRUE
