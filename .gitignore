@@ -26,3 +26,6 @@ __pycache__/
 #para los archivos subidos
 backend-arc/uploads/*
 !backend-arc/uploads/.gitkeep
+
+backend-ia/models/*
+frontend/node_modules/*
